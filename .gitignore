@@ -1,0 +1,9 @@
+*.pyc
+*~
+/venv
+__pycache__
+.idea/
+db.sqlite3
+.ipynb_checkpoints
+coding_test.ipynb
+crawling_test.ipynb

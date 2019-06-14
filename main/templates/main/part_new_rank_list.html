@@ -1,0 +1,20 @@
+<div class="container" style="margin-bottom:10px;">
+    <div class="row">
+        <div class="col-1">
+            <div class="font-weight-bold" style="color: #566573; font-size: 0.95em">{{object.rank}}</div>
+        </div>
+        <div class="col-4.5">
+            <a href="{{object.link}}">
+            <div><img src="{{object.img}}" width="124px" height="49px" style="max-width: none; padding: 1px; border: 1px solid rgb(221, 221, 221); vertical-align: top; display: inline;" title="{{object.name}}"></div>
+            </a>
+        </div>
+        <div class="col-8">
+            <div class="font-weight-bold" style="font-size: 0.85em" title="{{object.name}}">{{object.name|truncatechars:30}}</div>
+            <span style="background-color:#2a4752; padding:5px; font-weight: bold; color:#ffffff; font-size: 0.70em;" title="{{object.tags}}">{{object.tags|truncatechars:10}}</span>
+            <span class="font-weight-bold" style="color: #566573; font-size: 0.85em">
+                <strike>{{object.original_price}}</strike> {{object.final_price}}{% if object.discount_pct %}({{object.discount_pct}}){% endif %}
+            </span>
+
+        </div>
+    </div>
+</div>

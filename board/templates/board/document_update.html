@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+[{{object.category}}]{{object.title}}
+{% endblock %}
+
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.media}}
+    {{form.as_p}}
+    <input type="submit" class="btn btn-outline-dark" value="등록">
+</form>
+{% endblock %}

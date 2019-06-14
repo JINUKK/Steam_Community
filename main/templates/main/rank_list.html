@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}
+Steam IC.
+{% endblock %}
+
+{% block content %}
+<style>
+    .special_new_name{
+        background-color:#171a21;
+        padding:5px;
+        margin-right:100px;
+        margin-left:100px;
+        margin-bottom:10px;
+        font-weight: bold;
+        border-radius: 50px / 50px;
+        color:#ffffff;
+        font-size: 1em;
+        text-align:center;
+    }
+    .special_top_name{
+        background-color:#171a21;
+        padding:5px;
+        margin-right:100px;
+        margin-left:100px;
+        margin-bottom:10px;
+        font-weight: bold;
+        border-radius: 50px / 50px;
+        color:#ffffff;
+        font-size: 1em;
+        text-align:center;
+    }
+</style>
+
+<!--<br>-->
+<!--<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">-->
+<!--  <div class="carousel-inner">-->
+<!--    <div class="carousel-item active">-->
+<!--        <img src="https://steamcdn-a.akamaihd.net/steam/apps/997710/capsule_184x69.jpg?t=1559751301" class="d-block w-50" alt="...">-->
+<!--    </div>-->
+<!--    <div class="carousel-item">-->
+<!--      <img src="https://steamcdn-a.akamaihd.net/steam/apps/1068530/capsule_184x69.jpg?t=1559742249" class="d-block w-50" alt="...">-->
+<!--    </div>-->
+<!--    <div class="carousel-item">-->
+<!--      <img src="https://steamcdn-a.akamaihd.net/steam/apps/771800/capsule_184x69.jpg?t=1558710418" class="d-block w-50" alt="...">-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<div class="row">
+    <div class="col">
+        <div class="card border-bg mb-3" style="background-color: #171a21;">
+        <div class="card-header text-white" style="background-color: #171a21;">
+            <div class="row">
+                <div class="col-sm">특별 할인 SPECIAL DISCOUNT</div>
+                <div class="col-sm" style="font-weight: bold; font-size: 0.80em; text-align:right">STREAM TREND</div>
+            </div>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        <div class="special_new_name">인기 신제품</div>
+                        {% for object in special_new %}
+                        {% include 'main/part_new_rank_list.html' %}
+                        {% endfor %}
+                    </div>
+                    <div class="col">
+                        <div class="special_top_name">최고 인기 제품</div>
+                        {% for object in special_top %}
+                        {% include 'main/part_new_rank_list.html' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+        </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="card border-bg mb-3" style="max-width: 34rem; background-color: #ECEFF1;">
+        <div class="card-header text-white" style="background-color: #2E86C1;">
+            <div class="row">
+                <div class="col-sm">인기 신제품 NEW RELEASES</div>
+                <div class="col-sm" style="font-weight: bold; font-size: 0.80em; text-align:right">STREAM TREND</div>
+            </div>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                {% for object in newreleases %}
+                {% include 'main/part_new_rank_list.html' %}
+                {% endfor %}
+            </li>
+        </ul>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card border-bg mb-3" style="max-width: 34rem; background-color: #ECEFF1;">
+        <div class="card-header text-white" style="background-color: #2E86C1;">
+            <div class="row">
+                <div class="col-sm">최고 인기 제품 TOP SELLERS</div>
+                <div class="col-sm" style="font-weight: bold; font-size: 0.80em; text-align:right">STREAM TREND</div>
+            </div>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                {% for object in topsellers %}
+                {% include 'main/part_top_rank_list.html' %}
+                {% endfor %}
+            </li>
+        </ul>
+        </div>
+    </div>
+<!--    <div class="w-100"></div>-->
+<!--    <div class="col">-->
+<!--        <div class="card border-bg mb-3" style="max-width: 34rem; background-color: #1b2838;">-->
+<!--        <div class="card-header text-white" style="background-color: #1b2838;">-->
+<!--            <div class="row">-->
+<!--                <div class="col-sm">인기 출시 예정 UPCOMING</div>-->
+<!--                <div class="col-sm" style="font-weight: bold; font-size: 0.80em; text-align:right">STREAM TREND</div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <ul class="list-group list-group-flush">-->
+<!--            <li class="list-group-item">-->
+<!--                {% for object in upcoming %}-->
+<!--                {% include 'main/part_upcoming_rank_list.html' %}-->
+<!--                {% endfor %}-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+{% endblock %}

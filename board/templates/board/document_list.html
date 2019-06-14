@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+<ul class="nav nav-tabs">
+    {% for category in sub_categories %}
+    <li class="nav-item">
+        <a class="nav-link {% if current_category == category %}active{% endif %}" href="{{category.get_absolute_url}}" style="color:#000000;">
+            {{category.name}}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+<table class="table table-hover table-sm">
+    <thead>
+    <tr>
+        <th class="text-center">분류</th>
+        <th class="text-center">제목</th>
+        <th class="text-center">글쓴이</th>
+        <th class="text-center">작성일</th>
+        <th class="text-center">조회</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+    <tr>
+        <td class="text-center">{{object.category}}</td>
+        <td><a href="{{object.get_absolute_url}}" style="color:#000000">{{object.title}}</a></td>
+        <td class="text-center">{{object.author}}</td>
+        <td class="text-center" >{{object.formatcreatedate}}</td>
+        <td class="text-center" >{{object.hits}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div style="float:right">
+    <a href="{% url 'board:document_create' current_category.slug %}" class="btn btn-outline-dark btn-sm">쓰기</a>
+</div>
+{% endblock %}
