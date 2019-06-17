@@ -40,7 +40,7 @@ def documentList(request, category_slug):
     return render(request, 'board/document_list.html', {'object_list': documents,
                                                         'current_category': category[0],
                                                         'sub_categories': categories,
-                                                        'total_category': categories[0].parent_category})
+                                                        'total_sub_category': categories[0].parent_category})
 
 class DocumentDetail(DetailView):
     model = Document
