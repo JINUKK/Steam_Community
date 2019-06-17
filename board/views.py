@@ -39,7 +39,8 @@ def documentList(request, category_slug):
 
     return render(request, 'board/document_list.html', {'object_list': documents,
                                                         'current_category': category[0],
-                                                        'sub_categories': categories})
+                                                        'sub_categories': categories,
+                                                        'total_category': categories[0].parent_category})
 
 class DocumentDetail(DetailView):
     model = Document
@@ -47,6 +48,17 @@ class DocumentDetail(DetailView):
 
 def documentDetail(request, document_slug):
     document = get_object_or_404(Document, slug=document_slug)
+
+    # 동작하지 않는 경우
+    # document = Document.objects.filter(slug=document_slug)
+    # document[0].hits += 1
+    # document[0].save()
+
+    # 할당하면 동작함
+    # test = document[0]
+    # test.hits += 1
+    # test.save()
+
     document.hits += 1
     document.save()
     return render(request, 'board/document_detail.html', {'object': document})
@@ -66,9 +78,9 @@ def documentCreate(request, current_category_slug):
     category = Category.objects.filter(slug=current_category_slug)
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
-
+        # print(document_form.instance.title)
         if document_form.is_valid():
-            print(document_form.instance.title)
+            # print(document_form.instance.title)
             document_form.instance.author_id = request.user.id
             document_form.instance.slug = slugify(document_form.instance.title, allow_unicode=True)
             document = document_form.save()

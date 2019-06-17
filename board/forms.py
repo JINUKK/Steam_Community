@@ -20,5 +20,9 @@ class DocumentForm(forms.ModelForm):
         self.fields['text'].label = ""
         self.fields['attachment'].label = ""
         if default_category:
-            self.fields['category'].queryset = Category.objects.filter(parent_category=default_category)
+            qs = Category.objects.filter(parent_category=default_category)
+            if qs:
+                self.fields['category'].queryset = qs
+            else:
+                self.fields['category'].queryset = Category.objects.filter(parent_category=default_category.parent_category)
         self.fields['title'].widget.attrs = {'placeholder': "제목"}
