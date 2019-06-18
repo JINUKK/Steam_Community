@@ -67,11 +67,15 @@ class Comment(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.author.username
 
+    def formatcreatedatetime(self):
+        return self.create_date.strftime('%Y.%m.%d %H:%M')
 
+    def formatupdatedatetime(self):
+        return self.update_date.strftime('%Y.%m.%d %H:%M')
 

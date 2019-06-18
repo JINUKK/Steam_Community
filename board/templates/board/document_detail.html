@@ -54,4 +54,32 @@
     </div>
 </div>
 <br>
+<span class="badge badge-dark" style="font-size: 1em;">Comments '{{comments.count}}'</span>
+<table class="table table">
+    {% for comment in comments %}
+    <tr>
+        <td>
+            <span style="font-weight:bold;">{{comment.author.username}}</span>
+            <span style="font-size:0.8em;" class="text-muted">
+                {{comment.formatcreatedatetime}}
+                {% if comment.formatcreatedatetime == comment.formatupdatedatetime %}
+                {% else %}
+                ({{comment.formatupdatedatetime}}에 수정됨)
+                {% endif %}
+            </span>
+            {% if comment.author == user %}
+            <a href="{% url 'board:comment_update' comment.id %}" class="badge badge-secondary">수정</a>
+            <a href="{% url 'board:comment_delete' comment.id %}" class="badge badge-secondary">삭제</a>
+            {% endif %}
+            <br>
+            {{comment.text}}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+<form action="{% url 'board:comment_create' object.id %}" method="post">
+    {% csrf_token %}
+    {{comment_form.as_p}}
+    <input type="submit" value="등록" class="btn btn-outline-dark btn-sm">
+</form>
 {% endblock %}

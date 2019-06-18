@@ -26,7 +26,7 @@ class DocumentList(ListView):
                 queryset = queryset.none()
         return queryset
 
-def documentList(request, category_slug):
+def document_list(request, category_slug):
     print(category_slug)
     category = Category.objects.filter(slug=category_slug)
     categories = category[0].sub_categories.all()
@@ -48,9 +48,10 @@ class DocumentDetail(DetailView):
     model = Document
     template_name = 'board/document_detail.html'
 
-def documentDetail(request, document_slug):
+def document_detail(request, document_slug):
     document = get_object_or_404(Document, slug=document_slug)
-
+    comment_form = CommentForm()
+    comments = document.comments.all()
     # 동작하지 않는 경우
     # document = Document.objects.filter(slug=document_slug)
     # document[0].hits += 1
@@ -63,7 +64,9 @@ def documentDetail(request, document_slug):
 
     document.hits += 1
     document.save()
-    return render(request, 'board/document_detail.html', {'object': document})
+    return render(request, 'board/document_detail.html', {'object': document,
+                                                          'comment_form': comment_form,
+                                                          'comments': comments})
 
 class DocumentCreate(CreateView):
     model = Document
@@ -76,7 +79,7 @@ class DocumentCreate(CreateView):
         return super().form_valid(form)
 
 @login_required
-def documentCreate(request, current_category_slug):
+def document_create(request, current_category_slug):
     category = Category.objects.filter(slug=current_category_slug)
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
@@ -145,7 +148,7 @@ def comment_update(request, comment_id):
     else:
         comment_form = CommentForm(instance=comment)
 
-    return render(request, 'board/comment/update.html', {'comment_form':comment_form})
+    return render(request, 'board/comment/update.html', {'comment_form': comment_form})
 
 def comment_delete(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
@@ -159,4 +162,4 @@ def comment_delete(request, comment_id):
         comment.delete()
         return redirect(document)
     else:
-        return render(request, 'board/comment/delete.html', {'comment':comment})
+        return render(request, 'board/comment/delete.html', {'comment': comment})
