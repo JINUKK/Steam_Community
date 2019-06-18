@@ -3,9 +3,11 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from .models import Category, Document
-from .forms import DocumentForm
+from .models import Category, Document, Comment
+from .forms import DocumentForm, CommentForm
 from django.utils.text import slugify
+
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
@@ -115,3 +117,46 @@ def document_delete(request, document_id):
         document = get_object_or_404(Document, pk=document_id)
 
     return render(request, 'board/document_delete.html', {'object': document})
+
+def comment_create(request, document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    comment_form = CommentForm(request.POST)
+    comment_form.instance.author_id = request.user.id
+    comment_form.instance.document_id = document_id
+
+    if comment_form.is_valid():
+        comment_form.save()
+
+    return redirect(document)
+
+def comment_update(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    document = get_object_or_404(Document, pk=comment.document.id)
+
+    if request.user != comment.author and not request.user.is_staff:
+        messages.warning(request, '수정할 권한이 없어요!')
+        return redirect(document)
+
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST, instance=comment)
+        if comment_form.is_valid():
+            comment_form.save()
+            return redirect(document)
+    else:
+        comment_form = CommentForm(instance=comment)
+
+    return render(request, 'board/comment/update.html', {'comment_form':comment_form})
+
+def comment_delete(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    document = get_object_or_404(Document, pk=comment.document.id)
+
+    if request.user != comment.author and not request.user.is_staff:
+        messages.warning(request, '삭제할 권한이 없어요!')
+        return redirect(document)
+
+    if request.method == "POST":
+        comment.delete()
+        return redirect(document)
+    else:
+        return render(request, 'board/comment/delete.html', {'comment':comment})
