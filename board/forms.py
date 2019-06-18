@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Document
+from .models import Category, Document, Comment
 
 class DocumentForm(forms.ModelForm):
 
@@ -26,3 +26,14 @@ class DocumentForm(forms.ModelForm):
             else:
                 self.fields['category'].queryset = Category.objects.filter(parent_category=default_category.parent_category)
         self.fields['title'].widget.attrs = {'placeholder': "제목"}
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].label = ""
+        self.fields['text'].widget.attrs = {'class': "form-control", 'placeholder': "댓글을 남겨주세요."}
+
