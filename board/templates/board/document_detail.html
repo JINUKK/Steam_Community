@@ -59,7 +59,12 @@
     {% for comment in comments %}
     <tr>
         <td>
-            <span style="font-weight:bold;">{{comment.author.username}}</span>
+            <span style="font-weight:bold;">
+                {{comment.author.username}}
+                {%if comment.author.is_superuser %}
+                <span class="badge badge-secondary" style="font-size:0.7em;">관리자</span>
+                {% endif %}
+            </span>
             <span style="font-size:0.8em;" class="text-muted">
                 {{comment.formatcreatedatetime}}
                 {% if comment.formatcreatedatetime == comment.formatupdatedatetime %}
@@ -68,8 +73,8 @@
                 {% endif %}
             </span>
             {% if comment.author == user %}
-            <a href="{% url 'board:comment_update' comment.id %}" class="badge badge-secondary">수정</a>
-            <a href="{% url 'board:comment_delete' comment.id %}" class="badge badge-secondary">삭제</a>
+            <a href="{% url 'board:comment_update' comment.id %}" class="badge badge-primary">수정</a>
+            <a href="{% url 'board:comment_delete' comment.id %}" class="badge badge-primary">삭제</a>
             {% endif %}
             <br>
             {{comment.text}}

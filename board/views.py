@@ -11,6 +11,8 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
+from .steam_apps import search_steamapps
+
 class DocumentList(ListView):
     model = Document
     template_name = 'board/document_list.html'
@@ -27,7 +29,7 @@ class DocumentList(ListView):
         return queryset
 
 def document_list(request, category_slug):
-    print(category_slug)
+    # print(category_slug)
     category = Category.objects.filter(slug=category_slug)
     categories = category[0].sub_categories.all()
     if category.exists():
@@ -81,6 +83,15 @@ class DocumentCreate(CreateView):
 @login_required
 def document_create(request, current_category_slug):
     category = Category.objects.filter(slug=current_category_slug)
+
+    app_id = request.POST.get('search', request.GET.get('search', None))
+    print(app_id)
+    app_info = search_steamapps(app_id)
+    print(app_info.name)
+    print(app_info.image)
+    print(app_info.price)
+    print(app_info.link)
+
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
         # print(document_form.instance.title)
@@ -93,7 +104,8 @@ def document_create(request, current_category_slug):
     else:
         document_form = DocumentForm(default_category=category[0])
 
-    return render(request, 'board/document_create.html', {'form': document_form})
+    return render(request, 'board/document_create.html', {'form': document_form,
+                                                          'app_info': app_info})
 
 @login_required
 def document_update(request, document_id):
