@@ -16,17 +16,8 @@
     </span>
 </div>
 
-
-
-
-
-
 <form action="" method="post" enctype="multipart/form-data">
-    <form class="form-inline my-2 my-lg-0">
-        {% csrf_token %}
-        <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
     {% csrf_token %}
     {{form.media}}
     {{form.as_p}}

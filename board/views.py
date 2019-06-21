@@ -88,13 +88,12 @@ def document_create(request, current_category_slug):
     print(app_id)
     app_info = search_steamapps(app_id)
     print(app_info.name)
-    print(app_info.image)
-    print(app_info.price)
-    print(app_info.link)
 
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
         # print(document_form.instance.title)
+
+
         if document_form.is_valid():
             # print(document_form.instance.title)
             document_form.instance.author_id = request.user.id

@@ -1,7 +1,7 @@
 import requests
 
 class AppInfo:
-    def __init__(self, id=None, name=None, image=None, price=None):
+    def __init__(self, id="", name=None, image=None, price=None):
         self.id = id
         self.name = name
         self.image = image
@@ -29,12 +29,15 @@ def search_steamapps(app):
         # test = 457841
 
         # if str(test) == app:
-        #     print("yes!!")
+        #     print("같음")
         #
         # else:
-        #     print("달라요")
+        #     print("다름")
         # print(li)
         # print("app="+ app)
+
+        if app == None:
+            print("none type")
 
         if int(app) in li:
             url = "https://store.steampowered.com/api/appdetails?appids=" + app
