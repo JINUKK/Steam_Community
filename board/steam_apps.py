@@ -9,7 +9,7 @@ class AppInfo:
         self.link = "https://store.steampowered.com/app/" + id
 
 def search_steamapps(app):
-    req = requests.get('https://api.steampowered.com/ISteamApps/GetAppList/v1')
+    req = requests.get('https://api.steampowered.com/ISteamApps/GetAppList/v2')
 
     if req.status_code == requests.codes.ok:
         print("connect")

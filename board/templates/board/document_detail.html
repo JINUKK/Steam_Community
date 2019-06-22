@@ -80,6 +80,7 @@
             {{comment.text}}
         </td>
     </tr>
+
 {% endfor %}
 </table>
 <form action="{% url 'board:comment_create' object.id %}" method="post">

@@ -11,24 +11,31 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 from .steam_apps import search_steamapps
 
-class DocumentList(ListView):
-    model = Document
-    template_name = 'board/document_list.html'
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if 'slug' in self.kwargs:
-            category = Category.objects.filter(slug=self.kwargs['slug'])
-            categories = category[0].sub_categories.all()
-            if category.exists():
-                queryset = queryset.filter(category__in=categories).order_by('-id')
-            else:
-                queryset = queryset.none()
-        return queryset
+# class DocumentList(ListView):
+#     model = Document
+#     template_name = 'board/document_list.html'
+#
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         if 'slug' in self.kwargs:
+#             category = Category.objects.filter(slug=self.kwargs['slug'])
+#             categories = category[0].sub_categories.all()
+#             if category.exists():
+#                 queryset = queryset.filter(category__in=categories).order_by('-id')
+#             else:
+#                 queryset = queryset.none()
+#         return queryset
 
 def document_list(request, category_slug):
+
+    page = int(request.GET.get('page', 1))
+    # print(page)
+
     # print(category_slug)
     category = Category.objects.filter(slug=category_slug)
     categories = category[0].sub_categories.all()
@@ -41,14 +48,22 @@ def document_list(request, category_slug):
     else:
         documents = None
 
-    return render(request, 'board/document_list.html', {'object_list': documents,
+    paginator = Paginator(documents, 5)
+    page = paginator.page(page)
+
+    # print(page)
+
+    return render(request, 'board/document_list.html', {'object_list': page.object_list,
                                                         'current_category': category[0],
                                                         'sub_categories': categories,
-                                                        'total_sub_category': categories[0].parent_category})
+                                                        'total_sub_category': categories[0].parent_category,
+                                                        'is_paginated': True,
+                                                        'paginator': paginator,
+                                                        'page_obj': page})
 
-class DocumentDetail(DetailView):
-    model = Document
-    template_name = 'board/document_detail.html'
+# class DocumentDetail(DetailView):
+#     model = Document
+#     template_name = 'board/document_detail.html'
 
 def document_detail(request, document_slug):
     document = get_object_or_404(Document, slug=document_slug)
@@ -84,16 +99,14 @@ class DocumentCreate(CreateView):
 def document_create(request, current_category_slug):
     category = Category.objects.filter(slug=current_category_slug)
 
-    app_id = request.POST.get('search', request.GET.get('search', None))
-    print(app_id)
-    app_info = search_steamapps(app_id)
-    print(app_info.name)
+    # app_id = request.POST.get('search', request.GET.get('search', None))
+    # print(app_id)
+    # app_info = search_steamapps(app_id)
+    # print(app_info.name)
 
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
         # print(document_form.instance.title)
-
-
         if document_form.is_valid():
             # print(document_form.instance.title)
             document_form.instance.author_id = request.user.id
@@ -103,8 +116,7 @@ def document_create(request, current_category_slug):
     else:
         document_form = DocumentForm(default_category=category[0])
 
-    return render(request, 'board/document_create.html', {'form': document_form,
-                                                          'app_info': app_info})
+    return render(request, 'board/document_create.html', {'form': document_form})
 
 @login_required
 def document_update(request, document_id):

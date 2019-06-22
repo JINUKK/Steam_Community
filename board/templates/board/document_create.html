@@ -5,22 +5,41 @@
 {% endblock %}
 
 {% block content %}
-
-<div><img src="{{app_info.image}}" align="top" width="124px" height="49px" style="max-width: none; padding: 1px; border: 1px solid rgb(221, 221, 221); vertical-align: top; display: inline;" title="{{app_info.name}}">
-    <span>
-        {{app_info.name}}
-        <div>
-            {{app_info.price}}
-            <a href="{{app_info.link}}">{{app_info.link}}</a>
-        </div>
-    </span>
-</div>
-
+<div class="data_area">데이터가 입력될 곳</div>
 <form action="" method="post" enctype="multipart/form-data">
-    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
+    <input class="form-control mr-sm-2" type="search" id="app_searchbox" placeholder="Search" aria-label="Search" autocomplete="off">
     {% csrf_token %}
     {{form.media}}
     {{form.as_p}}
     <input type="submit" class="btn btn-outline-dark" value="등록">
 </form>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+$(function(){
+    $('#app_searchbox').keypress(function(e){
+        if(e.keyCode==13) {
+            //e.preventDefault();
+            alert('과연?');
+                $.ajax({
+                url: "https://store.steampowered.com/api/appdetails?appids=440",
+                type: "GET",
+                dataType: "json",
+                success: function(data){
+                    //alert(data.length);
+                    console.log(data);
+                },
+                complete : function(data){
+                    //alert(data.data);
+                    //$('.data_area').html(data);
+                },
+                error: function(request,status,error){
+                    alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+                }
+            });
+        }
+    });
+});
+</script>
 {% endblock %}

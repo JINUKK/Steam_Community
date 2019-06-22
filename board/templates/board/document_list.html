@@ -31,11 +31,11 @@
     <tbody>
     {% for object in object_list %}
     <tr>
-        <td class="text-center">{{object.category}}</td>
+        <td class="text-center" style="width: 70px;">{{object.category}}</td>
         <td><a href="{{object.get_absolute_url}}" style="color:#000000">{{object.title}}</a></td>
-        <td class="text-center">{{object.author}}</td>
-        <td class="text-center" >{{object.formatcreatedate}}</td>
-        <td class="text-center" >{{object.hits}}</td>
+        <td class="text-center" style="width: 120px;">{{object.author}}</td>
+        <td class="text-center" style="width: 100px;">{{object.formatcreatedate}}</td>
+        <td class="text-center" style="width: 70px;">{{object.hits}}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -43,4 +43,44 @@
 <div style="float:right">
     <a href="{% url 'board:document_create' current_category.slug %}" class="btn btn-outline-dark btn-sm">쓰기</a>
 </div>
+
+{% if is_paginated %}
+    <ul class="pagination justify-content-center pagination-sm">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_obj.previous_page_number}}" class="page-link">
+                <
+                </a>
+            </li>
+        {% endif %}
+
+        {% for page_num in paginator.page_range %}
+            <li class="page-item {% if page_obj.number == page_num %}disabled{% endif %}">
+                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_num}}" class="page-link">
+                    {{page_num}}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_obj.next_page_number}}" class="page-link">
+                    >
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+{% endif%}
+
+<form class="form" action="" method="post">
+    <div class="form-row align-items-center justify-content-center">
+        {% csrf_token %}
+        <div class="col-sm-3 my-1">
+            <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search" value="{% if search_keyword %}{{search_keyword}}{%endif%}">
+        </div>
+        <div class="col-auto my-1">
+            <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+        </div>
+    </div>
+</form>
 {% endblock %}
