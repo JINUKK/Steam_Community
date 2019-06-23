@@ -56,7 +56,7 @@
 
         {% for page_num in paginator.page_range %}
             <li class="page-item {% if page_obj.number == page_num %}disabled{% endif %}">
-                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_num}}" class="page-link">
+                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_num}}{% if search_keyword %}&search={{search_keyword}}{% endif %}" class="page-link">
                     {{page_num}}
                 </a>
             </li>
@@ -79,7 +79,7 @@
             <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search" value="{% if search_keyword %}{{search_keyword}}{%endif%}">
         </div>
         <div class="col-auto my-1">
-            <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+            <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
         </div>
     </div>
 </form>

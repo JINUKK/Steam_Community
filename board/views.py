@@ -36,6 +36,8 @@ def document_list(request, category_slug):
     page = int(request.GET.get('page', 1))
     # print(page)
 
+    search_keyword = request.POST.get('search', request.GET.get('search', None))
+
     # print(category_slug)
     category = Category.objects.filter(slug=category_slug)
     categories = category[0].sub_categories.all()
@@ -48,18 +50,31 @@ def document_list(request, category_slug):
     else:
         documents = None
 
+    context_data = {}
+
+    if search_keyword:
+        q = Q(author__username__icontains=search_keyword)
+        q |= Q(title__icontains=search_keyword)
+        q |= Q(text__icontains=search_keyword)
+        documents = documents.filter(q)
+        page = 1
+        context_data.update({'search_keyword': search_keyword})
+
+
     paginator = Paginator(documents, 5)
     page = paginator.page(page)
 
     # print(page)
 
-    return render(request, 'board/document_list.html', {'object_list': page.object_list,
-                                                        'current_category': category[0],
-                                                        'sub_categories': categories,
-                                                        'total_sub_category': categories[0].parent_category,
-                                                        'is_paginated': True,
-                                                        'paginator': paginator,
-                                                        'page_obj': page})
+    context_data.update({'object_list': page.object_list,
+                         'current_category': category[0],
+                         'sub_categories': categories,
+                         'total_sub_category': categories[0].parent_category,
+                         'is_paginated': True,
+                         'paginator': paginator,
+                         'page_obj': page})
+
+    return render(request, 'board/document_list.html', context_data)
 
 # class DocumentDetail(DetailView):
 #     model = Document
