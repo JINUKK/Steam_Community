@@ -28,8 +28,8 @@
         <th class="text-center">조회</th>
     </tr>
     </thead>
-    <tbody>
     {% for object in object_list %}
+    <tbody>
     <tr>
         <td class="text-center" style="width: 70px;">{{object.category}}</td>
         <td><a href="{{object.get_absolute_url}}" style="color:#000000">{{object.title}}</a></td>
@@ -37,8 +37,9 @@
         <td class="text-center" style="width: 100px;">{{object.formatcreatedate}}</td>
         <td class="text-center" style="width: 70px;">{{object.hits}}</td>
     </tr>
-    {% endfor %}
     </tbody>
+    {% empty %}
+    {% endfor %}
 </table>
 <div style="float:right">
     <a href="{% url 'board:document_create' current_category.slug %}" class="btn btn-outline-dark btn-sm">쓰기</a>
@@ -48,7 +49,7 @@
     <ul class="pagination justify-content-center pagination-sm">
         {% if page_obj.has_previous %}
             <li class="page-item">
-                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_obj.previous_page_number}}" class="page-link">
+                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_obj.previous_page_number}}{% if search_keyword %}&search={{search_keyword}}{% endif %}" class="page-link">
                 <
                 </a>
             </li>
@@ -64,7 +65,7 @@
 
         {% if page_obj.has_next %}
             <li class="page-item">
-                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_obj.next_page_number}}" class="page-link">
+                <a href="{% url 'board:document_in_category' current_category.slug %}?page={{page_obj.next_page_number}}{% if search_keyword %}&search={{search_keyword}}{% endif %}" class="page-link">
                     >
                 </a>
             </li>
@@ -76,11 +77,29 @@
     <div class="form-row align-items-center justify-content-center">
         {% csrf_token %}
         <div class="col-sm-3 my-1">
-            <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search" value="{% if search_keyword %}{{search_keyword}}{%endif%}">
+            <input class="form-control mr-sm-2" id="search_text" type="search" name="search" placeholder="Search" aria-label="Search" value="{% if search_keyword %}{{search_keyword}}{%endif%}">
         </div>
         <div class="col-auto my-1">
-            <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+            <button class="btn btn-outline-dark my-2 my-sm-0 search_button" type="submit" onclick="search_click();"><i class="fas fa-search"></i></button>
         </div>
     </div>
 </form>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+$(function(){
+    $('.search_button').click(function(e) {
+        var get_text = $("input[id='search_text']").val();
+        if(get_text.length == 0){
+            alert('검색어를 입력해주세요.');
+            e.preventDefault();
+        } else if(get_text.length == 1){
+            alert('검색어 글자 수는 2이상이에요.');
+            e.preventDefault();
+        }
+    });
+});
+
+</script>
 {% endblock %}

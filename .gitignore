@@ -7,3 +7,4 @@ db.sqlite3
 .ipynb_checkpoints
 coding_test.ipynb
 crawling_test.ipynb
+steam_api_key.py

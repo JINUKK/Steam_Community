@@ -16,4 +16,6 @@ urlpatterns = [
     path('comment/create/<int:document_id>', comment_create, name='comment_create'),
     path('comment/update/<int:comment_id>', comment_update, name='comment_update'),
     path('comment/delete/<int:comment_id>', comment_delete, name='comment_delete'),
+
+    path('ajax/get_steam_app/', steam_app, name='get_steam_app'),
 ]

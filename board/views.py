@@ -14,7 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from .steam_apps import search_steamapps
+from django.http import JsonResponse
+import requests, json
 
 # class DocumentList(ListView):
 #     model = Document
@@ -57,14 +58,18 @@ def document_list(request, category_slug):
         q |= Q(title__icontains=search_keyword)
         q |= Q(text__icontains=search_keyword)
         documents = documents.filter(q)
-        page = 1
         context_data.update({'search_keyword': search_keyword})
 
 
     paginator = Paginator(documents, 5)
+
+    if page > paginator.num_pages:
+        page = 1
+
     page = paginator.page(page)
 
-    # print(page)
+    print(page)
+    print(paginator.num_pages)
 
     context_data.update({'object_list': page.object_list,
                          'current_category': category[0],
@@ -201,3 +206,48 @@ def comment_delete(request, comment_id):
         return redirect(document)
     else:
         return render(request, 'board/comment/delete.html', {'comment': comment})
+
+def steam_app(request):
+
+    app_id = request.GET.get('search', 0)
+    print(app_id)
+
+    req = requests.get('http://store.steampowered.com/api/appdetails?appids='+ app_id +'&cc=kr')
+
+    if req.status_code == requests.codes.ok:
+        print("connect")
+
+        data = json.loads(req.text)
+
+        # print(data)
+
+        app_name = data[app_id]['data']['name']
+        app_image = data[app_id]['data']['header_image']
+
+        try:
+            app_price = data[app_id]['data']['price_overview']['final_formatted']
+        except:
+            # print(detail_req.json()[app]['data']['is_free'])
+            if data[app_id]['data']['is_free'] == True:
+                app_price = "무료"
+            else:
+                app_price = ""
+
+        app_link = "https://store.steampowered.com/app/" + app_id
+
+        print(app_name)
+        print(app_image)
+        print(app_price)
+        print(app_link)
+
+        app_data = {
+            "name": app_name,
+            "header_image": app_image,
+            "final_formatted": app_price,
+            "link": app_link
+        }
+
+    else:
+        print("disconnect")
+
+    return JsonResponse(app_data)

@@ -6,8 +6,9 @@
 
 {% block content %}
 <div class="data_area">데이터가 입력될 곳</div>
+<br>
 <form action="" method="post" enctype="multipart/form-data">
-    <input class="form-control mr-sm-2" type="search" id="app_searchbox" placeholder="Search" aria-label="Search" autocomplete="off">
+    <input class="form-control mr-sm-2" type="search" id="app_searchbox" name="search" placeholder="Search" aria-label="Search" autocomplete="off">
     {% csrf_token %}
     {{form.media}}
     {{form.as_p}}
@@ -16,26 +17,30 @@
 {% endblock %}
 
 {% block extra_script %}
+<script type="text/javascript" src="/static/js/jquery.ajax-cross-origin.min.js"></script>
 <script type="text/javascript">
 $(function(){
     $('#app_searchbox').keypress(function(e){
         if(e.keyCode==13) {
-            //e.preventDefault();
-            alert('과연?');
-                $.ajax({
-                url: "https://store.steampowered.com/api/appdetails?appids=440",
+            e.preventDefault();
+            //alert('과연?');
+
+            var get_text = $("input[id='app_searchbox']").val();
+
+            //alert(get_text)
+            $.ajax({
+                url: '/board/ajax/get_steam_app/',
                 type: "GET",
-                dataType: "json",
-                success: function(data){
-                    //alert(data.length);
-                    console.log(data);
-                },
-                complete : function(data){
-                    //alert(data.data);
-                    //$('.data_area').html(data);
-                },
-                error: function(request,status,error){
-                    alert("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+                dataType: 'json',
+                data: {"search": get_text},
+                success: function (data) {
+                    //alert("성공!");
+                    name = data.name;
+                    image = data.header_image;
+                    price = data.final_formatted;
+                    link = data.link;
+                    html = "<ul><li>"+name+"</li><li>"+image+"</li><li>"+price+"</li><li>"+link+"</li></ul>";
+                    $('.data_area').html(html);
                 }
             });
         }
