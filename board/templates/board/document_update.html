@@ -5,9 +5,96 @@
 
 {% block content %}
 <form action="" method="post" enctype="multipart/form-data">
+    <input class="form-control mr-sm-2" style="width:75%;" type="search" id="app_searchbox" name="search" placeholder="해당 스팀 게임링크의 번호를 입력하세요. ex) https://store.steampowered.com/app/413150 -> 413150" aria-label="Search" autocomplete="off">
+    <br>
+    <div class="row data_area" style="margin-left:15px;">
+    </div>
+    <br>
     {% csrf_token %}
     {{form.media}}
     {{form.as_p}}
     <input type="submit" class="btn btn-outline-dark" value="등록">
 </form>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+$(function(){
+    //alert('함수 실행');
+    $('.data_area').append($('<span/>').attr('class', 'app_image'));
+    $('.app_image').append($('<img/>').attr('class', 'header_image'));
+    $('.header_image').attr('width', '124px');
+    $('.header_image').attr('height', '49px');
+    $('.header_image').attr('style', 'max-width: none; padding: 1px; border: 1px solid rgb(221, 221, 221); vertical-align: top;');
+    $('.header_image').attr('src', $('input#id_app_image').val());
+
+    $('.data_area').append($('<span/>').attr('class', 'app_content'));
+    $('.app_content').append($('<span/>').attr('class', 'app_name'));
+    $('.app_name').attr('style', 'font-size: 0.9em; font-weight: bold;');
+    $('.app_name').html("&nbsp;" + $('input#id_app_name').val());
+    $('.app_content').append($('<span/>').attr('class', 'app_price'));
+    $('.app_price').attr('style', 'font-size: 0.8em; font-weight: bold; color: #999;');
+    $('.app_price').html("(" + $('input#id_app_price').val() + ")");
+    $('.app_content').append($('<span/>').attr('class', 'app_store_link'));
+    $('.app_store_link').append($('<a/>').attr('class', 'app_link'));
+    $('.app_link').attr('style', 'font-size: 0.9em; font-weight: bold; color: #2a4752; display: block;');
+    $('.app_link').attr('href', $('input#id_app_link').val());
+    $('.app_link').html("&nbsp;" + $('input#id_app_link').val());
+
+    $('#app_searchbox').keypress(function(e){
+        if(e.keyCode==13) {
+            e.preventDefault();
+            //alert('과연?');
+
+            var get_text = $("input[id='app_searchbox']").val();
+
+            //alert(get_text)
+            $.ajax({
+                url: '/board/ajax/get_steam_app/',
+                type: "GET",
+                dataType: 'json',
+                data: {"search": get_text},
+                success: function (data) {
+                    //alert("성공!");
+                    name = data.name;
+                    image = data.header_image;
+                    price = data.final_formatted;
+                    link = data.link;
+
+                    $('input#id_app_name').val(name);
+                    $('input#id_app_image').val(image);
+                    $('input#id_app_price').val(price);
+                    $('input#id_app_link').val(link);
+
+                    $('.data_area').empty();
+                    $('.data_area').append($('<span/>').attr('class', 'app_image'));
+                    $('.app_image').append($('<img/>').attr('class', 'header_image'));
+                    $('.header_image').attr('width', '124px');
+                    $('.header_image').attr('height', '49px');
+                    $('.header_image').attr('style', 'max-width: none; padding: 1px; border: 1px solid rgb(221, 221, 221); vertical-align: top;');
+                    $('.header_image').attr('src', image);
+
+                    $('.data_area').append($('<span/>').attr('class', 'app_content'));
+                    $('.app_content').append($('<span/>').attr('class', 'app_name'));
+                    $('.app_name').attr('style', 'font-size: 0.9em; font-weight: bold;');
+                    $('.app_name').html("&nbsp;" + name);
+                    $('.app_content').append($('<span/>').attr('class', 'app_price'));
+                    $('.app_price').attr('style', 'font-size: 0.8em; font-weight: bold; color: #999;');
+                    $('.app_price').html("(" + price + ")");
+                    $('.app_content').append($('<span/>').attr('class', 'app_store_link'));
+                    $('.app_store_link').append($('<a/>').attr('class', 'app_link'));
+                    $('.app_link').attr('style', 'font-size: 0.9em; font-weight: bold; color: #2a4752; display: block;');
+                    $('.app_link').attr('href', link);
+                    $('.app_link').html("&nbsp;" + link);
+                    //alert(image);
+                    console.log(data);
+                }
+            }).fail(function(){
+                //alert('검색한 결과가 없어요!');
+                $('.data_area').html('검색 결과가 없어요.');
+            });
+        }
+    });
+});
+</script>
 {% endblock %}

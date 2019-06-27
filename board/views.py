@@ -119,16 +119,21 @@ class DocumentCreate(CreateView):
 def document_create(request, current_category_slug):
     category = Category.objects.filter(slug=current_category_slug)
 
-    # app_id = request.POST.get('search', request.GET.get('search', None))
-    # print(app_id)
-    # app_info = search_steamapps(app_id)
-    # print(app_info.name)
-
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
+
+        app_name = request.POST.get('app_name')
+        app_image = request.POST.get('app_image')
+        app_price = request.POST.get('app_price')
+        app_link = request.POST.get('app_link')
+
         # print(document_form.instance.title)
         if document_form.is_valid():
             # print(document_form.instance.title)
+            document_form.instance.app_name = app_name
+            document_form.instance.app_image = app_image
+            document_form.instance.app_price = app_price
+            document_form.instance.app_link = app_link
             document_form.instance.author_id = request.user.id
             document_form.instance.slug = slugify(document_form.instance.title, allow_unicode=True)
             document = document_form.save()
@@ -144,7 +149,16 @@ def document_update(request, document_id):
         document = get_object_or_404(Document, pk=document_id)
         document_form = DocumentForm(request.POST, request.FILES, instance=document)
 
+        app_name = request.POST.get('app_name')
+        app_image = request.POST.get('app_image')
+        app_price = request.POST.get('app_price')
+        app_link = request.POST.get('app_link')
+
         if document_form.is_valid():
+            document_form.instance.app_name = app_name
+            document_form.instance.app_image = app_image
+            document_form.instance.app_price = app_price
+            document_form.instance.app_link = app_link
             document = document_form.save()
             return redirect(document)
     else:
@@ -211,6 +225,8 @@ def steam_app(request):
 
     app_id = request.GET.get('search', 0)
     print(app_id)
+
+    # req = requests.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=EFF28AA4D572334E5E2D0443A2A357E0')
 
     req = requests.get('http://store.steampowered.com/api/appdetails?appids='+ app_id +'&cc=kr')
 

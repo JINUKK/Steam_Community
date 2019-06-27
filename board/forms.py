@@ -5,7 +5,7 @@ class DocumentForm(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = ['category', 'title', 'text', 'attachment']
+        fields = ['app_name', 'app_image', 'app_price', 'app_link', 'category', 'title', 'text', 'attachment']
 
     def __init__(self, *args, **kwargs):
         # print(args)
@@ -15,6 +15,10 @@ class DocumentForm(forms.ModelForm):
             default_category = kwargs['default_category']
             del(kwargs['default_category']) # default_category라는 변수를 만들고 kwargs에서 값을 빼서 저장한 뒤 다시 지워줌
         super().__init__(*args, **kwargs)
+        self.fields['app_name'].widget = forms.HiddenInput()
+        self.fields['app_image'].widget = forms.HiddenInput()
+        self.fields['app_price'].widget = forms.HiddenInput()
+        self.fields['app_link'].widget = forms.HiddenInput()
         self.fields['category'].label = ""
         self.fields['title'].label = ""
         self.fields['text'].label = ""

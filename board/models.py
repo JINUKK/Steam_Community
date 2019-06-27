@@ -41,6 +41,11 @@ class Document(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
+    app_name = models.CharField(max_length=100, blank=True, null=True)
+    app_image = models.TextField(blank=True, null=True)
+    app_price = models.CharField(max_length=20, blank=True, null=True)
+    app_link = models.CharField(max_length=100, blank=True, null=True)
+
     def __str__(self):
         return self.title + ":" + self.create_date.strftime('%Y.%m.%d %H:%M')
 
