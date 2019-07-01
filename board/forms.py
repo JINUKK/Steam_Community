@@ -5,7 +5,7 @@ class DocumentForm(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = ['app_name', 'app_image', 'app_price', 'app_link', 'category', 'title', 'text', 'attachment']
+        fields = ['app_name', 'app_image', 'app_price', 'app_link', 'app_release_date', 'category', 'title', 'text', 'attachment']
 
     def __init__(self, *args, **kwargs):
         # print(args)
@@ -19,6 +19,7 @@ class DocumentForm(forms.ModelForm):
         self.fields['app_image'].widget = forms.HiddenInput()
         self.fields['app_price'].widget = forms.HiddenInput()
         self.fields['app_link'].widget = forms.HiddenInput()
+        self.fields['app_release_date'].widget = forms.HiddenInput()
         self.fields['category'].label = ""
         self.fields['title'].label = ""
         self.fields['text'].label = ""

@@ -21,6 +21,8 @@
 <script type="text/javascript">
 $(function(){
     //alert('함수 실행');
+
+    if($('input#id_app_name').val() != ''){
     $('.data_area').append($('<span/>').attr('class', 'app_image'));
     $('.app_image').append($('<img/>').attr('class', 'header_image'));
     $('.header_image').attr('width', '124px');
@@ -40,6 +42,7 @@ $(function(){
     $('.app_link').attr('style', 'font-size: 0.9em; font-weight: bold; color: #2a4752; display: block;');
     $('.app_link').attr('href', $('input#id_app_link').val());
     $('.app_link').html("&nbsp;" + $('input#id_app_link').val());
+    }
 
     $('#app_searchbox').keypress(function(e){
         if(e.keyCode==13) {
@@ -60,11 +63,13 @@ $(function(){
                     image = data.header_image;
                     price = data.final_formatted;
                     link = data.link;
+                    release_date = data.release_date;
 
                     $('input#id_app_name').val(name);
                     $('input#id_app_image').val(image);
                     $('input#id_app_price').val(price);
                     $('input#id_app_link').val(link);
+                    $('input#id_app_release_date').val(release_date);
 
                     $('.data_area').empty();
                     $('.data_area').append($('<span/>').attr('class', 'app_image'));

@@ -40,11 +40,13 @@ $(function(){
                     image = data.header_image;
                     price = data.final_formatted;
                     link = data.link;
+                    release_date = data.release_date;
 
                     $('input#id_app_name').val(name);
                     $('input#id_app_image').val(image);
                     $('input#id_app_price').val(price);
                     $('input#id_app_link').val(link);
+                    $('input#id_app_release_date').val(release_date);
 
                     $('.data_area').empty();
                     $('.data_area').append($('<span/>').attr('class', 'app_image'));

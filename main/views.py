@@ -196,3 +196,6 @@ def rank_list(request):
                                                    'newreleases': newreleases_list,
                                                    'topsellers': topsellers_list,
                                                    'upcoming':upcoming_list})
+
+def rank_pause(request):
+    return render(request, 'main/rank_list.html')

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.shortcuts import resolve_url
 import datetime
+import os
 
 """
 [Category]
@@ -45,9 +46,13 @@ class Document(models.Model):
     app_image = models.TextField(blank=True, null=True)
     app_price = models.CharField(max_length=20, blank=True, null=True)
     app_link = models.CharField(max_length=100, blank=True, null=True)
+    app_release_date = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
         return self.title + ":" + self.create_date.strftime('%Y.%m.%d %H:%M')
+
+    def filename(self):
+        return os.path.basename(self.attachment.name)
 
     def formatcreatedate(self):
         today_date = datetime.datetime.now().strftime('%m.%d')

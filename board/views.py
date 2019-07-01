@@ -228,7 +228,9 @@ def steam_app(request):
 
     # req = requests.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=EFF28AA4D572334E5E2D0443A2A357E0')
 
-    req = requests.get('http://store.steampowered.com/api/appdetails?appids='+ app_id +'&cc=kr')
+    url = 'http://store.steampowered.com/api/appdetails?appids='+ app_id +'&cc=kr&key=EFF28AA4D572334E5E2D0443A2A357E0'
+
+    req = requests.get(url)
 
     if req.status_code == requests.codes.ok:
         print("connect")
@@ -239,15 +241,19 @@ def steam_app(request):
 
         app_name = data[app_id]['data']['name']
         app_image = data[app_id]['data']['header_image']
+        if data[app_id]['data']['release_date']['coming_soon']:
+            app_release_date = data[app_id]['data']['release_date']['date']+"(출시 예정)"
+        else:
+            app_release_date = data[app_id]['data']['release_date']['date']
 
         try:
             app_price = data[app_id]['data']['price_overview']['final_formatted']
         except:
             # print(detail_req.json()[app]['data']['is_free'])
-            if data[app_id]['data']['is_free'] == True:
+            if data[app_id]['data']['is_free']:
                 app_price = "무료"
             else:
-                app_price = ""
+                app_price = "출시 예정"
 
         app_link = "https://store.steampowered.com/app/" + app_id
 
@@ -255,12 +261,14 @@ def steam_app(request):
         print(app_image)
         print(app_price)
         print(app_link)
+        print(app_release_date)
 
         app_data = {
             "name": app_name,
             "header_image": app_image,
             "final_formatted": app_price,
-            "link": app_link
+            "link": app_link,
+            "release_date": app_release_date
         }
 
     else:
