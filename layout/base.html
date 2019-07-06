@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container">
-     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #171a21;">
+     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #222222;">
 <!--        <a class="navbar-brand" href="{% url 'main:ranklist' %}">Steam Community</a>-->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -17,48 +17,60 @@
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'main:ranklist' %}" style="color:#ffffff; font-weight:bold;">홈</a>
+              <a class="nav-link" href="{% url 'main:ranklist' %}" style="color:#ffffff; font-weight:bold; font-style: italic;">홈</a>
             </li>
               {% for category in categories %}
             <li class="nav-item">
-              <a class="nav-link" href="{{category.get_absolute_url}}" style="color:#ffffff; font-weight:bold;">{{category.name}}</a>
+              <a class="nav-link" href="{{category.get_absolute_url}}" style="color:#ffffff; font-weight:bold; font-style: italic; ">
+                  {% if category.name == "할인/무료정보" %}
+                  <i class="fas fa-chevron-circle-down" style="color: #28B463;"></i>&nbsp;{{category.name}}
+                  {% elif category.name == "한글화 정보" %}
+                  <i class="fas fa-globe" style="color: #3498DB;"></i>&nbsp;{{category.name}}
+                  {% else %}
+                  <i class="fas fa-comments" style="color: #E67E22;"></i>&nbsp;{{category.name}}
+                  {% endif %}
+              </a>
             </li>
               {% endfor %}
           </ul>
           <span class="navbar-text">
-            {% if user.is_authenticated %}안녕하세요, {{user}}님{% else %}로그인해주세요.{% endif %}
+            {% if user.is_authenticated %}
+              <span style="color: #ffffff;">안녕하세요, {{user}}님!&nbsp;&nbsp;</span>
+              {% else %}
+              <span style="color: #ffffff;">로그인해주세요.&nbsp;&nbsp;</span>
+              {% endif %}
           </span>
           <ul class="navbar-nav">
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_logout' %}" style="color:#ffffff; font-weight:bold;">로그아웃</a>
+              <a class="btn btn-sm btn-outline-light" href="{% url 'account_logout' %}" style="font-weight:bold;">로그아웃</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_login' %}" style="color:#ffffff; font-weight:bold;">로그인</a>
+              <a class="btn btn-sm btn-outline-light" href="{% url 'account_login' %}" style="font-weight:bold;">로그인</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_signup' %}" style="color:#ffffff; font-weight:bold;">회원가입</a>
+              <a class="btn btn-sm btn-outline-light" href="{% url 'account_signup' %}" style="font-weight:bold;">회원가입</a>
             </li>
             {% endif %}
           </ul>
         </div>
       </nav>
     <br>
-      <br>
+    <br>
         <a href="{% url 'main:ranklist' %}" style="text-decoration: none;">
-      <span class="font-weight-bold" style="color: #2a475e; font-size: 2em">&nbsp;&nbsp;STEAM </span>
-      <span class="font-weight-bold" style="color: #66c0f4; font-size: 2em">IC.</span>
-      <span class="font-weight-normal" style="color: #abb2b9; font-size: 1.2em">&#124;</span>
-      <span class="font-weight-normal" style="color: #abb2b9; font-size: 1em">STEAM GAME INFORMATION & COMMUNITY</span>
-            </a>
-      <br>
+            <span class="font-weight-bold" style="color: #222222; font-size: 2em">&nbsp;&nbsp;STEAM </span>
+            <span class="font-weight-bold" style="color: #E67E22; font-size: 2em">IC.</span>
+            <span class="font-weight-normal" style="color: #abb2b9; font-size: 1.2em">&#124;</span>
+            <span class="font-weight-normal" style="color: #abb2b9; font-size: 0.9em">STEAM GAME INFORMATION & COMMUNITY</span>
+        </a>
     <br>
     <br>
-      {% block content %}
-
-      {% endblock %}
+    <br>
+    <br>
+    {% block content %}
+    {% endblock %}
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

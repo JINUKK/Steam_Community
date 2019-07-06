@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
+from django.http import HttpResponseRedirect
+from urllib.parse import urlparse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -61,15 +63,15 @@ def document_list(request, category_slug):
         context_data.update({'search_keyword': search_keyword})
 
 
-    paginator = Paginator(documents, 5)
+    paginator = Paginator(documents.order_by('doc_sort'), 10)
 
     if page > paginator.num_pages:
         page = 1
 
     page = paginator.page(page)
 
-    print(page)
-    print(paginator.num_pages)
+    # print(page)
+    # print(paginator.num_pages)
 
     context_data.update({'object_list': page.object_list,
                          'current_category': category[0],
@@ -85,6 +87,7 @@ def document_list(request, category_slug):
 #     model = Document
 #     template_name = 'board/document_detail.html'
 
+@login_required
 def document_detail(request, document_slug):
     document = get_object_or_404(Document, slug=document_slug)
     comment_form = CommentForm()
@@ -105,19 +108,33 @@ def document_detail(request, document_slug):
                                                           'comment_form': comment_form,
                                                           'comments': comments})
 
-class DocumentCreate(CreateView):
-    model = Document
-    template_name = 'board/document_create.html'
-    form_class = DocumentForm
+@login_required
+def documment_recommend(request, document_slug):
+    document = get_object_or_404(Document, slug=document_slug)
+    user = request.user
 
-    def form_valid(self, form):
-        form.instance.author_id = self.request.user.id
-        form.instance.slug = slugify(form.instance.title, allow_unicode=True)
-        return super().form_valid(form)
+    if user not in document.recommend.all():
+        document.recommend.add(user)
+
+    referer_url = request.META.get('HTTP_REFERER')
+    path = urlparse(referer_url).path
+    return HttpResponseRedirect(path)  # 도메인 주소 필요없이 경로만 필요하다.
+
+# class DocumentCreate(CreateView):
+#     model = Document
+#     template_name = 'board/document_create.html'
+#     form_class = DocumentForm
+#
+#     def form_valid(self, form):
+#         form.instance.author_id = self.request.user.id
+#         form.instance.slug = slugify(form.instance.title, allow_unicode=True)
+#         return super().form_valid(form)
 
 @login_required
 def document_create(request, current_category_slug):
     category = Category.objects.filter(slug=current_category_slug)
+
+    suser = request.user.is_superuser
 
     if request.method == "POST":
         document_form = DocumentForm(request.POST, request.FILES)
@@ -129,6 +146,7 @@ def document_create(request, current_category_slug):
 
         # print(document_form.instance.title)
         if document_form.is_valid():
+            # print(document_form.instance.category.name)
             # print(document_form.instance.title)
             document_form.instance.app_name = app_name
             document_form.instance.app_image = app_image
@@ -136,10 +154,12 @@ def document_create(request, current_category_slug):
             document_form.instance.app_link = app_link
             document_form.instance.author_id = request.user.id
             document_form.instance.slug = slugify(document_form.instance.title, allow_unicode=True)
+            if document_form.instance.category.name == "공지":
+                document_form.instance.doc_sort = 0
             document = document_form.save()
             return redirect(document)
     else:
-        document_form = DocumentForm(default_category=category[0])
+        document_form = DocumentForm(default_category=category[0], super_user = suser)
 
     return render(request, 'board/document_create.html', {'form': document_form})
 
@@ -257,11 +277,11 @@ def steam_app(request):
 
         app_link = "https://store.steampowered.com/app/" + app_id
 
-        print(app_name)
-        print(app_image)
-        print(app_price)
-        print(app_link)
-        print(app_release_date)
+        # print(app_name)
+        # print(app_image)
+        # print(app_price)
+        # print(app_link)
+        # print(app_release_date)
 
         app_data = {
             "name": app_name,

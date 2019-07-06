@@ -5,17 +5,58 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .form_style{
+        border: 1px solid #d1d1d1;
+        width: 870px;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #F8F8F8;
+    }
+    .file_upload{
+        border: 1px solid #d1d1d1;
+        padding: 15px;
+    }
+
+</style>
+{% load widget_tweaks %}
+<div class="form_style">
 <form action="" method="post" enctype="multipart/form-data">
-    <input class="form-control mr-sm-2" style="width:75%;" type="search" id="app_searchbox" name="search" placeholder="해당 스팀 게임링크의 번호를 입력하세요. ex) https://store.steampowered.com/app/413150 -> 413150" aria-label="Search" autocomplete="off">
-    <br>
-    <div class="row data_area" style="margin-left:15px;">
-    </div>
-    <br>
+<div class="game_box">
+    <table class="table table-bordered" style="background-color: #ffffff;">
+        <tr>
+            <td width="8%" style="vertical-align: middle; font-weight: bold; font-size: 0.8em;" >
+                <div>게임</div>
+                <div style="font-size: 0.7em; color: #999;">(단일선택)</div>
+            </td>
+            <td width="80%">
+                <input class="form-control mr-sm-2" style="width:100%;" type="search" id="app_searchbox" name="search" placeholder="해당 스팀 앱의 번호를 입력하세요. ex) https://store.steampowered.com/app/413150 -> 413150" aria-label="Search" autocomplete="off">
+                <br>
+                <div class="select_app_text" style="margin-left:15px; font-weight: bold; font-size: 0.8em;"></div>
+                <div class="row data_area" style="margin-left:15px;"></div>
+            </td>
+        </tr>
+    </table>
+
+</div>
     {% csrf_token %}
     {{form.media}}
-    {{form.as_p}}
-    <input type="submit" class="btn btn-outline-dark" value="등록">
+    <table>
+        <tbody>
+        <tr>
+            <td>{% render_field form.category class="form-control" %}</td>
+            <td width="760px">{% render_field form.title class="form-control" placeholder='제목' %}</td>
+        </tr>
+        </tbody>
+    </table>
+    {{form.text}}
+    <div class="file_upload">{{form.attachment}}</div>
+    <br>
+    <div class="form-row align-items-center justify-content-center">
+        <input type="submit" class="btn btn-outline-dark" value="등록">
+    </div>
 </form>
+</div>
 {% endblock %}
 
 {% block extra_script %}
@@ -49,6 +90,7 @@ $(function(){
                     $('input#id_app_release_date').val(release_date);
 
                     $('.data_area').empty();
+                    $('.select_app_text').html('선택된 게임');
                     $('.data_area').append($('<span/>').attr('class', 'app_image'));
                     $('.app_image').append($('<img/>').attr('class', 'header_image'));
                     $('.header_image').attr('width', '124px');
@@ -72,8 +114,7 @@ $(function(){
                     console.log(data);
                 }
             }).fail(function(){
-                //alert('검색한 결과가 없어요!');
-                $('.data_area').html('검색 결과가 없어요.');
+                $('.data_area').html('검색 결과가 없어요!');
             });
         }
     });

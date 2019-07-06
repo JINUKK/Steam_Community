@@ -25,6 +25,7 @@ class Category(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True, allow_unicode=True, db_index=True)
     parent_category = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name='sub_categories')
+
     def __str__(self):
         return self.name
 
@@ -39,6 +40,7 @@ class Document(models.Model):
     text = RichTextUploadingField()
     hits = models.PositiveIntegerField(default=0)
     attachment = models.FileField(upload_to='attachment/%Y/%m/%d', blank=True)
+    recommend = models.ManyToManyField(get_user_model(), blank=True, related_name='recommend_doc')
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
@@ -47,6 +49,12 @@ class Document(models.Model):
     app_price = models.CharField(max_length=20, blank=True, null=True)
     app_link = models.CharField(max_length=100, blank=True, null=True)
     app_release_date = models.CharField(max_length=30, blank=True, null=True)
+
+    doc_sort = models.PositiveIntegerField(default=1)
+    end_time = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['doc_sort']
 
     def __str__(self):
         return self.title + ":" + self.create_date.strftime('%Y.%m.%d %H:%M')

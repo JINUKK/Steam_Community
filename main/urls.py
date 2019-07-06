@@ -5,5 +5,5 @@ from .views import rank_list, rank_pause
 app_name = 'main'
 
 urlpatterns = [
-    path('', rank_pause, name = 'ranklist'),
+    path('', rank_list, name = 'ranklist'),
 ]

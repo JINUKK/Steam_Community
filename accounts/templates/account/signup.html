@@ -5,17 +5,53 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block content %}
-<h1>{% trans "Sign Up" %}</h1>
-
-<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
-
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
-</form>
-
+<div class="row">
+    <div class="col-sm"></div>
+    <div class="col-sm">
+        <div class="alert alert-dark mt-3" role="alert">
+<!--            <h1>{% trans "Sign Up" %}</h1>-->
+          {% load widget_tweaks %}
+          <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{{form.username.label}}</label>
+                {% render_field form.username class="form-control" placeholder='아이디' %}
+                {% for error in form.username.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label>{{form.email.label}}</label>
+                {% render_field form.email class="form-control" placeholder='이메일' %}
+                {% for error in form.email.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label>{{form.password1.label}}</label>
+                {% render_field form.password1 class="form-control" placeholder='비밀번호' %}
+                {% for error in form.password1.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label>{{form.password2.label}}</label>
+                {% render_field form.password2 class="form-control" placeholder='비밀번호' %}
+                {% for error in form.password2.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+<!--            {{ form.as_p }}-->
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button class="btn btn-dark btn-sm" type="submit">{% trans "Sign Up" %}</button>
+<!--            <button type="submit">{% trans "Sign Up" %} &raquo;</button>-->
+          </form>
+          <br>
+          <p>{% blocktrans %}Already have an account? Then please <a href="{{login_url}}">sign in</a>.{% endblocktrans %}</p>
+        </div>
+    </div>
+    <div class="col-sm"></div>
+</div>
 {% endblock %}

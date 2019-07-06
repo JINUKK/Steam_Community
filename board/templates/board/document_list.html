@@ -4,38 +4,82 @@
 {% endblock %}
 
 {% block content %}
+<!--<div style="font-weight: 500; font-size: 2.5em; color: #222222;">{{total_sub_category.name}}</div>-->
+<!--<br>-->
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a class="nav-link {% if current_category == total_sub_category %}active{% endif %}" href="{{total_sub_category.get_absolute_url}}" style="color:#000000;">
-            전체
+        <a class="nav-link active" href="{{total_sub_category.get_absolute_url}}" style="{% if current_category == total_sub_category %}font-weight: bold;{% endif %} color:#000000; padding: .2rem 1.5rem;">
+            <span>
+                {% if current_category == total_sub_category %}
+                <i class="fas fa-check" style="color: #E67E22;"></i>
+                <span style="font-weight: bold;">전체</span>
+                {% else %}
+                전체
+                {% endif %}
+            </span>
         </a>
     </li>
     {% for category in sub_categories %}
     <li class="nav-item">
-        <a class="nav-link {% if current_category == category %}active{% endif %}" href="{{category.get_absolute_url}}" style="color:#000000;">
+        <a class="nav-link active" href="{{category.get_absolute_url}}" style="color:#000000; padding: .2rem 1.5rem;">
+            {% if current_category == category %}
+            <i class="fas fa-check" style="color: #E67E22;"></i>
+            <span style="font-weight: bold;">{{category.name}}</span>
+            {% else %}
             {{category.name}}
+            {% endif %}
         </a>
     </li>
     {% endfor %}
 </ul>
-<table class="table table-hover table-sm">
-    <thead>
+<table class="table table-hover table-borderless table-sm">
+    <thead style="background-color: #222222; color: #ffffff;">
     <tr>
-        <th class="text-center">분류</th>
+        <th class="text-center" style="">분류</th>
         <th class="text-center">제목</th>
+        <th class="text-center">게임</th>
         <th class="text-center">글쓴이</th>
         <th class="text-center">작성일</th>
         <th class="text-center">조회</th>
+        <th class="text-center">추천</th>
     </tr>
     </thead>
     {% for object in object_list %}
-    <tbody>
+    <tbody style="{% if object.category.name == '공지' %} background-color: #D7DBDD; {% endif %}">
     <tr>
-        <td class="text-center" style="width: 70px;">{{object.category}}</td>
-        <td><a href="{{object.get_absolute_url}}" style="color:#000000">{{object.title}}</a></td>
+        <td class="text-center" style="width: 70px; font-size: 0.9em; font-weight: bold; vertical-align: middle;">
+            {{object.category.name}}
+        </td>
+        <td style="word-break:break-all; vertical-align: middle;">
+            <a href="{{object.get_absolute_url}}" style="color:#000000;">
+                {{object.title}}
+                {% if object.attachment %}
+                &nbsp;&nbsp;<i class="fas fa-save"></i>
+                {% endif %}
+                {% if object.comments.count != 0 %}
+                <span style="color:#E67E22; font-weight: bold; font-size: 0.8em">&nbsp;+{{object.comments.count}}</span>
+                {% endif %}
+            </a>
+        </td>
+        <td class="text-center" style="width: 70px;">
+            {% if object.app_image %}
+            <img src="{{object.app_image}}" width="59" height="29" style="padding: 1px; border: 1px solid rgb(221, 221, 221);" title="{{object.app_name}}">
+            {% endif %}
+        </td>
         <td class="text-center" style="width: 120px;">{{object.author}}</td>
         <td class="text-center" style="width: 100px;">{{object.formatcreatedate}}</td>
-        <td class="text-center" style="width: 70px;">{{object.hits}}</td>
+        <td class="text-center" style="width: 70px;">
+            {% if object.hits >= 100 %}
+            <span style="color:#E67E22;">{{object.hits}}</span>
+            {% else %}
+            {{object.hits}}
+            {% endif %}
+        </td>
+
+        <td class="text-center" style="width: 70px;">
+            <span style="color:#E67E22;">{{object.recommend.count}}</span>
+        </td>
+
     </tr>
     </tbody>
     {% empty %}
@@ -100,6 +144,5 @@ $(function(){
         }
     });
 });
-
 </script>
 {% endblock %}

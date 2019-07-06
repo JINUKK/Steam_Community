@@ -12,7 +12,7 @@ class CommentInline(admin.TabularInline):
     model = Comment
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'author', 'title', 'slug', 'create_date', 'update_date']
+    list_display = ['doc_sort', 'id', 'author', 'title', 'slug', 'create_date', 'update_date']
     prepopulated_fields = {'slug':('title',)}
     inlines = [CommentInline]
 

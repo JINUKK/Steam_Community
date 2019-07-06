@@ -8,6 +8,7 @@ urlpatterns = [
     path('', document_list, name='document'),
     path('<category_slug>/', document_list, name='document_in_category'),
     path('doc/<document_slug>/', document_detail, name='document_detail'),
+    path('recomment/<document_slug>/', documment_recommend, name='document_recommend'),
     path('create/<current_category_slug>/', document_create, name='document_create'),
     path('update/<int:document_id>', document_update, name='document_update'),
     path('delete/<int:document_id>', document_delete, name='document_delete'),

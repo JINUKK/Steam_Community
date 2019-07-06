@@ -79,6 +79,17 @@
   </div>
 <br>
 {{object.text|safe}}
+<div style="text-align: center;">
+    <button style="background-color: #ffffff; border: 2px solid #333333; border-radius: 4px;">
+        <a href="{% url 'board:document_recommend' object.slug %}" style="color: #000000; text-decoration: none;">
+            <div style="font-weight: bold; font-size: 0.8em;">추천</div>
+            <i class="far fa-thumbs-up"></i>
+            <span style="font-weight: bold; font-size: 0.8em;">
+                {{object.recommend.all.count}}
+            </span>
+        </a>
+    </button>
+</div>
 <div class="row-sm" style="padding-bottom:40px; border-bottom:2px solid #000000;">
     <div class="col-sm"></div>
     <div class="col-sm">
