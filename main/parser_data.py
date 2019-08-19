@@ -14,8 +14,8 @@ class AppInfo:
         self.score = score
         self.score_description = score_description
 
-def upcoming_data_parser(text_file):
-    html = BeautifulSoup(text_file, "html.parser")
+def upcoming_data_parser(html_data):
+    html = BeautifulSoup(html_data, "html.parser")
     items = html.select('div.store_horizontal_autoslider > a')
     data_list = []
 
@@ -27,8 +27,8 @@ def upcoming_data_parser(text_file):
 
     return data_list
 
-def special_new_parser(text_file):
-    html = BeautifulSoup(text_file, "html.parser")
+def special_new_parser(html_data):
+    html = BeautifulSoup(html_data, "html.parser")
     items = html.select('div#tab_content_NewReleases > div#NewReleasesTable > div#NewReleasesRows > a.tab_item')
     data_list = []
 
@@ -46,8 +46,8 @@ def special_new_parser(text_file):
 
     return data_list
 
-def special_top_parser(text_file):
-    html = BeautifulSoup(text_file, "html.parser")
+def special_top_parser(html_data):
+    html = BeautifulSoup(html_data, "html.parser")
     items = html.select('div#tab_content_TopSellers > div#TopSellersTable > div#TopSellersRows > a.tab_item')
     data_list = []
 
@@ -55,8 +55,13 @@ def special_top_parser(text_file):
         rank = idx + 1
         link = item.get('href')
         img = item.select_one('div.tab_item_cap > img.tab_item_cap_img').get('src')
-        discount_pct = item.select_one('div.discount_block > div.discount_pct').text
-        original_price = item.select_one('div.discount_block > div.discount_prices > div.discount_original_price').text
+        if item.select_one('div.discount_block > div.discount_pct'):
+            discount_pct = item.select_one('div.discount_block > div.discount_pct').text
+            original_price = item.select_one(
+                'div.discount_block > div.discount_prices > div.discount_original_price').text
+        else:
+            discount_pct = ""
+            original_price = ""
         final_price = item.select_one('div.discount_block > div.discount_prices > div.discount_final_price').text
         name = item.select_one('div.tab_item_content > div.tab_item_name').text
         tags = item.select_one('div.tab_item_content > div.tab_item_details > div.tab_item_top_tags').text
@@ -65,8 +70,8 @@ def special_top_parser(text_file):
 
     return data_list
 
-def new_releases_parser(text_file):
-    html = BeautifulSoup(text_file, "html.parser")
+def new_releases_parser(html_data):
+    html = BeautifulSoup(html_data, "html.parser")
     items = html.select('div.home_tabs_content > div.tab_content > a.tab_item')
     data_list = []
 
@@ -91,9 +96,8 @@ def new_releases_parser(text_file):
 
     return data_list
 
-def top_sellers_parser(text_file):
-
-    html = BeautifulSoup(text_file, "html.parser")
+def top_sellers_parser(html_data):
+    html = BeautifulSoup(html_data, "html.parser")
     items = html.select('div#search_result_container > div > a.search_result_row')
     data_list = []
 

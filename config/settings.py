@@ -49,11 +49,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.steam',
     'widget_tweaks',
-    'corsheaders',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -153,9 +152,10 @@ AUTHENTICATION_BACKENDS = (
 
 SITE_ID = 1
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ORIGIN_WHITELIST = [
-#     '127.0.0.1:8000',
-# ]
+CRONJOBS = [
+    ('* * * * *', 'main.cron.upcoming_data'),
+    ('* * * * *', 'main.cron.special_new_data'),
+    ('* * * * *', 'main.cron.special_top_data'),
+    ('* * * * *', 'main.cron.new_releases_data'),
+    ('* * * * *', 'main.cron.top_sellers_data')
+]

@@ -7,5 +7,7 @@ db.sqlite3
 .ipynb_checkpoints
 coding_test.ipynb
 crawling_test.ipynb
+crawling_save.ipynb
+aws_secret_key.py
 steam_api_key.py
 /static

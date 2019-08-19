@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Category, Document, Comment
+from .models import SteamApp, Category, Document, Comment
+
+class SteamAppAdmin(admin.ModelAdmin):
+    list_display = ['id', 'appid', 'name', 'final_price', 'coming_soon', 'release_date']
+
+admin.site.register(SteamApp, SteamAppAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'slug']

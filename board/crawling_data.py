@@ -1,56 +1,86 @@
 import requests
 import json
 from steam_api_key import my_key
-import os
-from config.settings import BASE_DIR
-import pickle
 
 
-def steam_app_data():
-    url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/?key=" + my_key
+def steam_app_data(app):
+    detail_url = "https://store.steampowered.com/api/appdetails?appids=" + app
+    custom_headers = {
+        'Cookie': 'Steam_Language=koreana',
+    }
+    detail_req = requests.get(detail_url, headers=custom_headers)
 
-    req = requests.get(url)
+    if detail_req.status_code == requests.codes.ok:
+        app_id = app
+        app_name = detail_req.json()[app]['data']['name']
 
-    if req.status_code == requests.codes.ok:
-        print("steam app data connect")
+        app_image = detail_req.json()[app]['data']['header_image']
 
-        json_data = json.loads(req.text)
+        price_overview = detail_req.json()[app]['data'].get('price_overview', None)
 
-        app_data = json_data['applist']['apps']
+        if price_overview is not None:
+            app_dc_per = detail_req.json()[app]['data']['price_overview']['discount_percent']
+            app_init_price = detail_req.json()[app]['data']['price_overview']['initial_formatted']
+            app_final_price = detail_req.json()[app]['data']['price_overview']['final_formatted']
 
-        app_num = len(app_data)
-        print(app_num)
+        else:
+            app_dc_per = 0
+            app_init_price = ""
+            app_final_price = ""
 
-        app_id_list = []
-        app_name_list = []
+        app_developers = detail_req.json()[app]['data']['developers']
 
-        for idx in range(0, app_num-1):
-            app_id_list.append(app_data[idx]['appid'])
-            app_name_list.append(app_data[idx]['name'])
+        app_release_date = detail_req.json()[app]['data']['release_date']
 
-        print(app_id_list)
-        print(app_name_list)
+        app_supported_languages = detail_req.json()[app]['data']['supported_languages']
 
-        app_id_text_file = open(os.path.join(BASE_DIR, 'static/crawling_data/steam_app_id_data.txt'), 'wb')
-        app_name_text_file = open(os.path.join(BASE_DIR, 'static/crawling_data/steam_app_name_data.txt'), 'wb')
+        ad = ''
+        for i in app_developers:
+            ad += i + ','
 
-        pickle.dump(app_id_list, app_id_text_file)
-        pickle.dump(app_name_list, app_name_text_file)
-        app_id_text_file.close()
-        app_name_text_file.close()
+        app_dev = ad.rstrip(",")
+
+        app_publishers = detail_req.json()[app]['data']['publishers']
+
+        ap = ''
+        for i in app_publishers:
+            ap += i + ','
+
+        app_pub = ap.rstrip(",")
+
+        app_genres = detail_req.json()[app]['data']['genres']
+
+        ag = ''
+        for i in app_genres:
+            ag += i['description'] + ','
+
+        app_gen = ag.rstrip(",")
+
+        if app_release_date['coming_soon']:
+            app_re_date = app_release_date['date'] + "(출시예정)"
+
+        else:
+            app_re_date = app_release_date['date']
+
+        try:
+            sl_list = app_supported_languages.replace("<strong>", "").replace("</strong>", "").split("<br>")
+            app_sl = sl_list[0] + "(" + sl_list[1] + ")"
+        except:
+            app_sl = app_supported_languages.replace("<strong>", "").replace("</strong>", "")
+
+        print(app_name)
+        print(app_image)
+        print(app_dc_per)
+        print(app_init_price)
+        print(app_final_price)
+        print(app_dev)
+        print(app_pub)
+        print(app_gen)
+        print(app_re_date)
+        print(app_sl)
 
     else:
         print("steam app data disconnect")
 
 if __name__ == "__main__":
-    steam_app_data()
-
-    # f = open(os.path.join(BASE_DIR, 'static/crawling_data/steam_app_id_data.txt'), 'rb')
-    # d = pickle.load(f)
-    # print(type(d))
-    # print(d)
-    #
-    # g = open(os.path.join(BASE_DIR, 'static/crawling_data/steam_app_name_data.txt'), 'rb')
-    # e = pickle.load(g)
-    # print(type(e))
-    # print(e)
+    steam_app_data('905340')
